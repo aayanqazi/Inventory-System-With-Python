@@ -35,7 +35,7 @@ class ViewSales extends Component {
   }
 
   componentWillMount() {
-    this.props.getSalesList(0,(new Date()).getTime());
+    this.props.getSalesList(this.props.authUser.data.token);
   }
   componentWillReceiveProps(nextProps){
     setTimeout(()=> {

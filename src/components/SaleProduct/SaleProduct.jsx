@@ -41,10 +41,13 @@ class SaleProduct extends Component {
       canSubmit: false,
     });
   }
-
+  componentWillMount(){
+    this.props.getStoreList(this.props.authUser.data.token);  
+    this.props.getProductList(this.props.authUser.data.token);
+  }
   submitForm(data) {
     console.log("sale details object ",data);
-    data.date = data.date.getTime();
+    data.date = data.date;
     data.storeKey = data.store.split("_")[0];
     data.store =  data.store.split("_")[1];
 
@@ -56,7 +59,7 @@ class SaleProduct extends Component {
 
     console.log("sale details object after ",data);
 
-    this.props.addSaleDetails(data);
+    this.props.addSaleDetails(data,this.props.authUser.data.token);
     this.setState({snackbarOpen:true});
     
   }
@@ -83,9 +86,9 @@ class SaleProduct extends Component {
               floatingLabelText="Store"
               fullWidth={true}
             >
-              {
+             {
                 this.props.storeList.map(store=>{
-                  return <MUI.MenuItem value={store.storeKey+'_'+store.name} primaryText={store.name} />
+                  return store.map(data => {return <MUI.MenuItem key={data.id} value={data.id+'_'+data.storeName} primaryText={data.storeName} />})
                 })
               }
             </FormsySelect>
@@ -96,9 +99,9 @@ class SaleProduct extends Component {
               floatingLabelText="Product"
               fullWidth={true}
             >
-              {
+               {
                 this.props.productList.map(product=>{
-                  return <MUI.MenuItem value={product.productKey+'_'+product.name} primaryText={product.name} />
+                  return product.map(data=>{return <MUI.MenuItem value={data.id+'_'+data.name} primaryText={data.name} key={data.id} />})
                 })
               }
             </FormsySelect>

@@ -99,11 +99,11 @@ export default class AuthMiddleware {
     static logout() {
         return (dispatch) => {
             dispatch(AuthActions.logout())
-            AuthMiddleware.logoutFromFirebase(dispatch);
+            AuthMiddleware.logoutFromDatabase(dispatch);
         }
     }
 
-    static logoutFromFirebase(dispatch) {
+    static logoutFromDatabase(dispatch) {
         LocalStorageManager.removeUser();
         firebase.auth().signOut()
             .then(function () {

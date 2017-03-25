@@ -51,9 +51,10 @@ class AddStore extends Component {
     });
   }
 
-  submitForm(data) {    
-    console.log("store obj",data);
-    this.props.addStore(data);    
+  submitForm(datas) {    
+    console.log("store obj",datas);
+    this.props.addStore(datas,this.props.authUser.data.token); 
+    // this.props.getStoreList(this.props.authUser.data.token);   
     this.setState({snackbarOpen:true});
   }
 

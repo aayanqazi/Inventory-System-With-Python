@@ -23,15 +23,15 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         isLoggedIn: () => dispatch(AuthMiddleware.isLoggedIn()),
-        addStore : (storeObj)=> dispatch(StockMiddleware.addStore(storeObj)),
+        addStore : (storeObj,token)=> dispatch(StockMiddleware.addStore(storeObj,token)),
         addProduct : (productObj,token)=> dispatch(StockMiddleware.addProduct(productObj,token)),
         addPurchaseDetails : (purchaseDetailsObj)=> dispatch(StockMiddleware.addPurchaseDetails(purchaseDetailsObj)),
-        addSaleDetails : (saleDetailsObj)=> dispatch(StockMiddleware.addSaleDetails(saleDetailsObj)),
+        addSaleDetails : (saleDetailsObj,token)=> dispatch(StockMiddleware.addSaleDetails(saleDetailsObj,token)),
 
-        getStoreList : ()=> dispatch(StockMiddleware.getStoreList()),
-        getProductList : ()=> dispatch(StockMiddleware.getProductList()),
+        getStoreList : (token)=> dispatch(StockMiddleware.getStoreList(token)),
+        getProductList : (token)=> dispatch(StockMiddleware.getProductList(token)),
         getStockCount : ()=> dispatch(StockMiddleware.getStockCounts()),
-        getSalesList : (startDate,endDate)=> dispatch(StockMiddleware.getSaleList(startDate,endDate)),
+        getSalesList : (token)=> dispatch(StockMiddleware.getSaleList(token)),
         getPurchaseList : (startDate,endDate)=> dispatch(StockMiddleware.getPurchaseList(startDate,endDate))
     };
 }
@@ -54,8 +54,8 @@ class App extends Component {
   }
 
   componentWillMount() {
-    // this.props.getStoreList();
-    // this.props.getProductList();
+    
+    
     // this.props.getStockCount();
     if(this.props.isAuthenticated){
       console.log("Authenticated");
@@ -66,6 +66,10 @@ class App extends Component {
       this.context.router.push("/login");
     }
     
+  }
+  componentDidMount(){
+    this.props.getStoreList(this.props.authUser.data.token);
+    this.props.getProductList(this.props.authUser.data.token);
   }
 
   handleDrawerToggle = () => this.setState({drawerOpen: !this.state.drawerOpen});

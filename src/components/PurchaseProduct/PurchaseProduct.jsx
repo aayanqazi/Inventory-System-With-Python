@@ -38,6 +38,10 @@ class PurchaseProduct extends Component {
       }
     },0);
   }
+  componentWillMount(){
+    this.props.getStoreList(this.props.authUser.data.token); 
+    this.props.getProductList(this.props.authUser.data.token); 
+  }
 
   enableButton() {
     this.setState({
@@ -74,6 +78,11 @@ class PurchaseProduct extends Component {
   }
 
   render() {
+    // this.props.storeList.map(arr => {
+    // arr.map(data=>{
+    //   console.log(data)
+    // })
+    // })
     return (
       <div style={styles.purchaseProductContainer}>
         <MUI.Paper style={styles.paper}>
@@ -93,7 +102,7 @@ class PurchaseProduct extends Component {
             >
               {
                 this.props.storeList.map(store=>{
-                  return <MUI.MenuItem value={store.storeKey+'_'+store.name} primaryText={store.name} />
+                  return store.map(data => {return <MUI.MenuItem key={data.id} value={data.id+'_'+data.storeName} primaryText={data.storeName} />})
                 })
               }
             </FormsySelect>
@@ -106,7 +115,7 @@ class PurchaseProduct extends Component {
             >
               {
                 this.props.productList.map(product=>{
-                  return <MUI.MenuItem value={product.productKey+'_'+product.name} primaryText={product.name} />
+                  return product.map(data=>{return <MUI.MenuItem value={data.id+'_'+data.name} primaryText={data.name} key={data.id} />})
                 })
               }
               
