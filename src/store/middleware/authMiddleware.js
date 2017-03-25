@@ -1,6 +1,5 @@
 import AuthActions from "./../actions/authActions";
 import LocalStorageManager from '../../services/localStorageManager'
-import * as firebase from 'firebase';
 import { instance } from "../../config/server"
 export default class AuthMiddleware {
 
@@ -26,18 +25,7 @@ export default class AuthMiddleware {
                 dispatch(AuthActions.signupRejected(error));
             })
 
-        // firebase.auth()
-        //         .createUserWithEmailAndPassword(credentials.email, credentials.password)
-        //         .then(function (authUser){
-        //             console.log("signup successfull ",authUser);
-        //             AuthMiddleware.createUserInFirebase(dispatch,credentials,authUser);
-        //         })
-        //         .catch(function(error) {
-        //             //var errorCode = error.code;
-        //             //var errorMessage = error.message;
-        //             console.log("signup error ",error);
-        //             dispatch(AuthActions.signupRejected(error));
-        //         });
+
 
     }
     // Signup Functions Ends
@@ -54,44 +42,24 @@ export default class AuthMiddleware {
     }
 
     static authenticateUser(dispatch, credentials) {
-        instance.post("/login",{email:credentials.email,password:credentials.password})
-        .then(response => response.data)
-        .then(body => {
-            console.log(body)
-            LocalStorageManager.setUser(body)
-            dispatch(AuthActions.signinSuccessful(body));
-        })
-        .catch(error =>{
-            console.log(error)
-            dispatch(AuthActions.signinRejected(error));
-        })
+        instance.post("/login", { email: credentials.email, password: credentials.password })
+            .then(response => response.data)
+            .then(body => {
+                console.log(body)
+                LocalStorageManager.setUser(body)
+                dispatch(AuthActions.signinSuccessful(body));
+            })
+            .catch(error => {
+                console.log(error)
+                dispatch(AuthActions.signinRejected(error));
+            })
 
 
 
-        // firebase.auth()
-        //     .signInWithEmailAndPassword(credentials.email, credentials.password)
-        //     .then(function (authUser) {
-        //         console.log("singIN successfull ", authUser);
-        //         AuthMiddleware.getUserFromFirebase(dispatch, authUser);
-        //     })
-        //     .catch(function (error) {
-        //         //var errorCode = error.code;
-        //         //var errorMessage = error.message;
-        //         console.log("signup error ", error);
-        //         dispatch(AuthActions.signinRejected(error));
-        //     });
 
     }
 
-    // static getUserFromFirebase(dispatch, authUser) {
-    //     firebase.database().ref('/')
-    //         .child(`users/${authUser.uid}`)
-    //         .once('value')
-    //         .then(function (userObj) {
-    //             console.log("user after login ", userObj.val());
-    //             LocalStorageManager.setUser(userObj.val())
-    //             dispatch(AuthActions.signinSuccessful(userObj.val()));
-    //         });
+
     // Signin Functions Ends
 
 
@@ -105,14 +73,9 @@ export default class AuthMiddleware {
 
     static logoutFromDatabase(dispatch) {
         LocalStorageManager.removeUser();
-        firebase.auth().signOut()
-            .then(function () {
-                dispatch(AuthActions.logoutSuccessful())
-            })
-            .catch(function (error) {
-                console.log("Error in lougout ", error);
-                dispatch(AuthActions.logoutSuccessful())
-            })
+
+        dispatch(AuthActions.logoutSuccessful())
+
 
     }
 
@@ -122,8 +85,16 @@ export default class AuthMiddleware {
     static isLoggedIn() {
         return (dispatch) => {
             let user = LocalStorageManager.getUser();
+             let token = user.data.token;
             if (user) {
+                instance("/getProducts",instance.defaults.headers.token = token)
+                .then(response => response.data)
+                .then(body => {
                 dispatch(AuthActions.signinSuccessful(user))
+            })
+            .catch(error => {
+                console.log("not logged in ");
+            })
             }
             else {
                 console.log("not logged in ");
@@ -135,18 +106,7 @@ export default class AuthMiddleware {
 
 
 
-    static updateUser(authUser) {
-        return (dispatch) => {
-            firebase.database().ref('/')
-                .child(`users/${authUser.uid}`)
-                .once('value')
-                .then(function (userObj) {
-                    console.log("user after update ", userObj.val());
-                    LocalStorageManager.setUser(userObj.val())
-                    dispatch(AuthActions.updateUser(userObj.val()));
-                });
-        }
-    }
+
 
 
 }

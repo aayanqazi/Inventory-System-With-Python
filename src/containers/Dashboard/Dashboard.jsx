@@ -25,7 +25,7 @@ class Dashboard extends Component {
           Please Wait while we are loading Charts for you
         </div>
         <div>
-            {/*<Graphs {...this.props} />*/}
+            <Graphs {...this.props} />
         </div>
       </div>
     );

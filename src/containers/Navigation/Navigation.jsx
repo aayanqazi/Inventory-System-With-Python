@@ -67,12 +67,12 @@ class Navigation extends Component {
               leftIcon={<Web/>}
               containerElement={<Link to="/addproduct"/>}
             />
-          <MUI.MenuItem
+          {/*<MUI.MenuItem
               className="navigation-menuItem"
               primaryText="Add Purchase Detail" 
               leftIcon={<Web/>}
               containerElement={<Link to="/purchaseproduct"/>}
-            />
+            />*/}
           <MUI.MenuItem
               className="navigation-menuItem"
               primaryText="Add Sale Detail" 

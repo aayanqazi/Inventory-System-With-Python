@@ -194,7 +194,7 @@ export default class StockMiddleware {
 
     /// Get Product List Functions
     static getProductList(token) {
-        console.log("getProductList ");
+        console.log("getProductList " , token);
         return (dispatch) => {
             dispatch(StockActions.getProductList())
             StockMiddleware.getProductListFromDatabase(dispatch, token);
@@ -220,23 +220,32 @@ export default class StockMiddleware {
 
     /// Get Sales List Functions
     static getSaleList(token) {
-        console.log("getSaleList ");
+        console.log(token);
         return (dispatch) => {
             dispatch(StockActions.getSalesList())
-            // StockMiddleware.getSalesListFromFirebase(dispatch, startDate, endDate);
+            StockMiddleware.getSalesListFromDatabase(dispatch, token);
         }
     }
 
-    static getSalesListFromFirebase(dispatch, startDate, endDate) {
-        const salesListRef = firebase.database().ref('/')
-            .child("inventoryDetails")
-            .orderByChild("date")
-            //.equalTo("Sale")
-            .startAt(startDate).endAt(endDate);
-        salesListRef.on("child_added", function (snapshot) {
-            if (snapshot.val().type === "Sale") {
-                dispatch(StockActions.addSaleItemToList(snapshot.val()))
-            }
+    static getSalesListFromDatabase(dispatch,token) {
+        // const salesListRef = firebase.database().ref('/')
+        //     .child("inventoryDetails")
+        //     .orderByChild("date")
+        //     //.equalTo("Sale")
+        //     .startAt(startDate).endAt(endDate);
+        // salesListRef.on("child_added", function (snapshot) {
+        //     if (snapshot.val().type === "Sale") {
+        //         dispatch(StockActions.addSaleItemToList(snapshot.val()))
+        //     }
+        // })
+        instance.get("/getSales",instance.defaults.headers.token = token)
+        .then(response => response.data)
+        .then(body => {
+            dispatch(StockActions.addSaleItemToList(body.data))
+            console.log(body)
+        })
+        .catch(error => {
+            console.log(error)
         })
     }
 

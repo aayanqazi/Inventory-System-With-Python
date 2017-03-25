@@ -1,129 +1,66 @@
-import React, { Component,PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import styles from './ViewStockStyles';
-import {Table, TableBody, TableHeader, TableHeaderColumn, 
-        TableRow, TableRowColumn } from 'material-ui/Table';
-import Paper  from 'material-ui/Paper';
-import Divider  from 'material-ui/Divider';
-import {Link} from 'react-router';
+import {
+  Table, TableBody, TableHeader, TableHeaderColumn,
+  TableRow, TableRowColumn
+} from 'material-ui/Table';
+import Paper from 'material-ui/Paper';
+import Divider from 'material-ui/Divider';
+import { Link } from 'react-router';
 import Formsy from 'formsy-react';
 import { FormsyText } from 'formsy-material-ui/lib';
-
+import Moment from 'react-moment';
 
 class ViewStock extends Component {
-
-
-  formatList() {
-    let {productList, storeList , stockCount} = this.props;
-    var storeKeyValue = {};
-    var productKeyValue = {};
-    storeList.map(store=>{
-      storeKeyValue[store.storeKey] = store.name;
-    })
-    productList.map(product=> {
-      productKeyValue[product.productKey] = product.name
-    })
-/*
-    var test = [
-      {name:"productname",key:"productkey",
-        storeList: [
-          {
-            storeName:"name",
-            storeKey:"key",
-            count: 34
-          }
-        ]
-      }
-    ];
-
-*/
-    var countProductList = [];
-    var keys = Object.keys(this.props.stockCount);
-    keys.map(key=>{
-      countProductList.push({
-        productName:productKeyValue[key],
-        productKey: key,
-        storeList: []
-      });
-      console.log(key);
-    })
-    console.log("countProductList>>>>>>>>>>>>",countProductList); 
-
-    Object.keys(storeKeyValue).map(key=>{
-      countProductList.map(prodItem=>{
-        var storeCountItem = stockCount[prodItem.productKey][key]
-        if(storeCountItem){
-          prodItem.storeList.push({
-            storeName:storeKeyValue[key],
-            storeKey:key,
-            count: storeCountItem.count
-          })
-        }
-        else {
-          prodItem.storeList.push({
-            storeName:storeKeyValue[key],
-            storeKey:key,
-            count: 0
-          })
-        }
-      })
-      
-    })
-    console.log("<><><>MY Final List<><><><><><>",countProductList);
-    return {
-        productListWithCount: countProductList,
-        storeKeyValue: storeKeyValue
-      };
-    //console.log("Product List",productList);
-    //console.log("store List",storeList);
-    //console.log("storeKeyValue ",storeKeyValue);
-    //console.log("productKeyValue ",productKeyValue);
-    //console.log(this.props.stockCount);
-    
+  constructor(props) {
+    super();
   }
-
+  componentWillMount() {
+    this.props.getProductList(this.props.authUser.data.token)
+  }
   render() {
-    var formatedObj = this.formatList();
+
+    this.props.productList.map(product => {
+      product.map(data => { console.log(data) })
+    })
+
     return (
       <div style={styles.viewStockContainer}>
         <Paper style={styles.paper}>
           <h3 style={styles.title}>Stock Details</h3>
-          <Divider/>
+          <Divider />
           <Table>
             <TableHeader displaySelectAll={false}
-                adjustForCheckbox={false}>
+              adjustForCheckbox={false}>
               <TableRow>
-                <TableHeaderColumn>Product</TableHeaderColumn>
-                {
-                  Object.keys(formatedObj.storeKeyValue).map(key=>{
-                    return <TableHeaderColumn key={key}>{formatedObj.storeKeyValue[key]}</TableHeaderColumn>
-                  })
-                }                
+                <TableHeaderColumn>Product Name</TableHeaderColumn>
+                <TableHeaderColumn>Manufacturer</TableHeaderColumn>
+                <TableHeaderColumn>Quantity</TableHeaderColumn>
+                <TableHeaderColumn>Price</TableHeaderColumn>
+                <TableHeaderColumn>Date Of Purchased</TableHeaderColumn>
+               
               </TableRow>
             </TableHeader>
             <TableBody
-                displayRowCheckbox={false}
-                showRowHover={true}
-                stripedRows={true}
-              >
-              {
-                formatedObj.productListWithCount.map(obj=>{
-                  return (
-                    <TableRow>
-                      <TableRowColumn>{obj.productName}</TableRowColumn>
-                      {
-                        obj.storeList.map(st=>{
-                          return <TableRowColumn key={st.storeKey}>{st.count}</TableRowColumn>  
-                        })
-                      }
-                    </TableRow>
-                  )
-                })
-              }
-              
+              displayRowCheckbox={false}
+              showRowHover={true}
+              stripedRows={true}
+            >
+            
+             {this.props.productList.map(product => {
+                  return (product.map(data => { return (<TableRow>   
+                    <TableRowColumn>{data.name}</TableRowColumn>
+                     <TableRowColumn>{data.manufacture}</TableRowColumn>
+                      <TableRowColumn>{data.quantity}</TableRowColumn>
+                       <TableRowColumn>{data.amount}</TableRowColumn> 
+                        <TableRowColumn><Moment format="DD/MMM/YYYY">{data.date}</Moment></TableRowColumn>
+                    
+                    </TableRow> )  }))
+                })}
             </TableBody>
           </Table>
 
-          <div style={styles.clear}/>
+          <div style={styles.clear} />
         </Paper>
       </div>
     );

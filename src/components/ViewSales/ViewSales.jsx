@@ -13,28 +13,21 @@ import Moment from 'react-moment';
 
 class ViewSales extends Component {
 
-  static contextTypes = {
-    router: PropTypes.object.isRequired
-  }
+  // static contextTypes = {
+  //   router: PropTypes.object.isRequired
+  // }
   constructor(props){
     super();
     console.log("component props ",props);
-    this.state = {
-        canSubmit:false
-    }
-    
-    this.enableButton = this.enableButton.bind(this);
-    this.disableButton = this.disableButton.bind(this);
-    this.submitForm = this.submitForm.bind(this);
-    this.notifyFormError = this.notifyFormError.bind(this);
+ 
   }
 
 
-  errorMessages = {
-    wordsError: "Please only use letters"
-  }
+  // errorMessages = {
+  //   wordsError: "Please only use letters"
+  // }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.getSalesList(this.props.authUser.data.token);
   }
   componentWillReceiveProps(nextProps){
@@ -46,64 +39,19 @@ class ViewSales extends Component {
     },0);
   }
 
-  enableButton() {
-    this.setState({
-      canSubmit: true,
-    });
-  }
 
-  disableButton() {
-    this.setState({
-      canSubmit: false,
-    });
-  }
-
-  submitForm(data) {
-    //alert(JSON.stringify(data));
-    console.log(data);
-    console.log(data.startDate.getTime());
-    console.log(new Date())
-    this.props.getSalesList(data.startDate.getTime(),data.endDate.getTime());
-    
-  }
-
-  notifyFormError(data) {
-    console.error('Form error:', data);
-  }
 
   render() {
+    this.props.salesList.map(saleItem=>{
+    saleItem.map(datas => {
+      console.log(datas)
+    })
+    })
     return (
       <div style={styles.viewSalesContainer}>
         <MUI.Paper style={styles.paper}>
           <h3 style={styles.title}>Sales</h3>
-          <MUI.Divider/>
 
-          <Formsy.Form
-            onValid={this.enableButton}
-            onInvalid={this.disableButton}
-            onValidSubmit={this.submitForm}
-            onInvalidSubmit={this.notifyFormError}>
-            
-            <FormsyDate
-              style={{float:"left"}}
-              name="startDate"
-              required
-              floatingLabelText="State Date"
-            />
-            <FormsyDate
-              style={{float:"left",marginLeft:10}}
-              name="endDate"
-              required
-              floatingLabelText="End Date"
-            />
-            <MUI.RaisedButton label="Filter"  
-                          style={{float:"left",verticalAlign:"bottom",marginTop:28,marginLeft:10}}
-                          primary={true}
-                          type="submit"
-                          disabled={!this.state.canSubmit}
-                          />
-            <div style={styles.clear}></div>
-        </Formsy.Form>
           
           <MUI.Divider style={{marginTop:30}}/>
           <Table>
@@ -112,9 +60,10 @@ class ViewSales extends Component {
               <TableRow>
                 <TableHeaderColumn>Product Name</TableHeaderColumn>
                 <TableHeaderColumn>Store</TableHeaderColumn>
+                <TableHeaderColumn>Store Location</TableHeaderColumn>
                 <TableHeaderColumn>Type</TableHeaderColumn>
                 <TableHeaderColumn>Quantity</TableHeaderColumn>
-                <TableHeaderColumn>Unit Price</TableHeaderColumn>
+               
                  <TableHeaderColumn>Sale Volume</TableHeaderColumn>
                 <TableHeaderColumn>Date</TableHeaderColumn>
               </TableRow>
@@ -126,17 +75,22 @@ class ViewSales extends Component {
               >
 
               {
-                this.props.salesList.map(saleItem=>{
+                this.props.salesList.map(saleItems=>{
                    return (
-                      <TableRow>              
-                        <TableRowColumn>{saleItem.product}</TableRowColumn>
-                        <TableRowColumn>{saleItem.store}</TableRowColumn>
-                        <TableRowColumn>{saleItem.type}</TableRowColumn>
-                        <TableRowColumn>{saleItem.quantity}</TableRowColumn>
-                        <TableRowColumn>{saleItem.unitPrice}</TableRowColumn>
-                        <TableRowColumn>{saleItem.quantity * saleItem.unitPrice}</TableRowColumn>
-                        <TableRowColumn><Moment format="DD/MMM/YYYY">{saleItem.date}</Moment></TableRowColumn>
-                      </TableRow>
+                     saleItems.map(saleItem=>{
+                       return (<TableRow>              
+                        <TableRowColumn>{saleItem.productName}</TableRowColumn>
+                        <TableRowColumn>{saleItem.storeName}</TableRowColumn>
+                        <TableRowColumn>{saleItem.storeLocation}</TableRowColumn>
+
+                        <TableRowColumn>Sale</TableRowColumn>
+                        <TableRowColumn>{saleItem.sale.quantity}</TableRowColumn>
+                       
+                        <TableRowColumn>{saleItem.sale.totalAmount}</TableRowColumn>
+                        <TableRowColumn><Moment format="DD/MMM/YYYY">{saleItem.sale.date}</Moment></TableRowColumn>
+                      </TableRow>)
+                     })
+                      
                    );
                 })
               }
