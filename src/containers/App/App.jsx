@@ -6,6 +6,7 @@ import AppTheme from '../../app-theme';
 import Navigation from '../Navigation/Navigation'
 import { connect } from 'react-redux';
 import { AuthMiddleware, StockMiddleware } from '../../store'
+import {grey700} from 'material-ui/styles/colors';
 
 function mapStateToProps(state) {
     return {
@@ -82,8 +83,10 @@ class App extends Component {
     const styles = {
       header: {
         // User for resizing center view and header
-        paddingLeft: drawerOpen ? paddingLeftDrawerOpen : 20
+        paddingLeft: drawerOpen ? paddingLeftDrawerOpen : 20,
+         backgroundColor:grey700
       },
+    
       container: {
         // User for resizing center view and header
         margin: '20px 20px 20px 15px',

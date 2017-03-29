@@ -155,7 +155,7 @@ class Graphs extends Component {
                 onValidSubmit={this.submitForm}
                 onInvalidSubmit={this.notifyFormError}>
                 
-                <FormsyText
+                {/*<FormsyText
                     style={{float:"left"}}
                     name="predictValue"
                     validations="isNumeric"
@@ -163,7 +163,7 @@ class Graphs extends Component {
                     required
                     hintText="Predict Value"
                     floatingLabelText="Predict Value"
-                  />
+                  />*/}
 
                 
                 <MUI.RaisedButton label="Predict"  

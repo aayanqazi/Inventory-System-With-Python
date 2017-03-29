@@ -2,20 +2,50 @@
       min-width: 320px;
       max-width: 400px;
       height: auto;
-      position: absolute;
       top: 20%;
       left: 0;
       right: 0;
       margin: auto;
+      position: absolute;
+    width:100%;
 }
-
+.logo{
+    width:100px;
+    margin-left:37%;
+    margin-right:37%;
+    position: absolute;
+    margin-top:-45px;
+}
+.Main-Container{
+ width: 100%; 
+    height: 100%; 
+    position: fixed; 
+    left: 0px; 
+    top: 0px; 
+    z-index: -1;
+}
+.class{
+   position: absolute;
+    -webkit-filter: blur(1px);
+    -moz-filter: blur(1px);
+    -o-filter: blur(1px);
+    -ms-filter: blur(1px);
+    filter: blur(1px);
+    width:100%;
+    height: 100%;
+    -moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;-o-user-select:none;
+}
 .long-paper {
     padding: 20px;
-    overflow: auto
+    overflow: auto;
+
 }
 .long-buttonsDiv {
     text-align: center;
-    padding: 10px
+    color:darkcyan;
+    margin:-7px;
+    -moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;-o-user-select:none;
+    text-shadow: 1px 1px whitesmoke;
 }
 .long-flatButton {
     color: #9E9E9E !important;

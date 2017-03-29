@@ -7,7 +7,10 @@ import {Link} from 'react-router';
 import { connect } from 'react-redux';
 import Help from 'material-ui/svg-icons/action/help';
 import PersonAdd from 'material-ui/svg-icons/social/person-add';
+import Circle from 'material-ui/svg-icons/action/account-circle';
 import './Login.css';
+import USER from "../../images/user.png";
+import Back from "../../images/01.jpg";
 import {grey500} from 'material-ui/styles/colors';
 import { AuthMiddleware } from '../../store'
 
@@ -54,9 +57,16 @@ class Login extends Component {
   render() {
     return (
       <MuiThemeProvider muiTheme={AppTheme}>          
-      <div>
+      <div className="Main-Container">
+         <img className="class" src={Back}>
+    </img>
         <div className="long-loginContainer">
+          <img className="logo" src={USER} />
+          
           <MUI.Paper className="long-paper">
+            <br /><br />
+            <h1 style={{textAlign:"center"}}>Member Login</h1>
+            
             <form>
               <MUI.TextField
                 ref="email"
@@ -89,18 +99,8 @@ class Login extends Component {
           </MUI.Paper>
 
           <div className="long-buttonsDiv">
-          <Link to="/login">
-              <MUI.FlatButton
-                label="Register"                
-                className="long-flatButton"
-                icon={<PersonAdd />}
-              />
-            </Link>
-            <MUI.FlatButton
-              label="Forgot Password?"
-              className="long-flatButton"
-              icon={<Help />}
-            />
+         <p style={{fontWeight:"bold"}}>Welcome To Our Inventory Management System </p>
+            
           </div>
 
           
