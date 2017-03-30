@@ -101,7 +101,10 @@ class Navigation extends Component {
             />
 
             <MUI.Divider />
-          
+          <div className="lastLine">
+          <MUI.Divider />
+            <h5>@CopyRight 2017 </h5>
+            </div>
       </div>
     );
   }
@@ -110,8 +113,8 @@ class Navigation extends Component {
     const muiTheme = getMuiTheme({
   palette: {
     canvasColor: grey800,
-    textColor:"white",
-     alternateTextColor: "white",
+    textColor:white,
+     alternateTextColor: white,
   },
   appBar: {
     height: 50,

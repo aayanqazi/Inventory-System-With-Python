@@ -85,16 +85,16 @@ export default class AuthMiddleware {
     static isLoggedIn() {
         return (dispatch) => {
             let user = LocalStorageManager.getUser();
-             let token = user.data.token;
+            let token = user.data.token;
             if (user) {
-                instance("/getProducts",instance.defaults.headers.token = token)
-                .then(response => response.data)
-                .then(body => {
-                dispatch(AuthActions.signinSuccessful(user))
-            })
-            .catch(error => {
-                console.log("not logged in ");
-            })
+                instance("/getProducts", instance.defaults.headers.token = token)
+                    .then(response => response.data)
+                    .then(body => {
+                        dispatch(AuthActions.signinSuccessful(user))
+                    })
+                    .catch(error => {
+                        console.log("not logged in ");
+                    })
             }
             else {
                 console.log("not logged in ");

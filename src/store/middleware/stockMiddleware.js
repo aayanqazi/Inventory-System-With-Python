@@ -4,10 +4,7 @@ import * as firebase from 'firebase';
 import { instance } from "../../config/server"
 export default class StockMiddleware {
 
-    // static formatStringForKey(obj,propertyToFormat,newProperty){
-    //     obj[newProperty] = obj[propertyToFormat].toLowerCase().replace(/\s+/g, '');
-    // }
-
+    
     //Add Store
     static addStore(storeObj, token) {
         console.log("addStore ", storeObj);
@@ -19,16 +16,7 @@ export default class StockMiddleware {
 
     static addStoreOnDatabase(dispatch, storeObj, token) {
         console.log(token)
-        // StockMiddleware.formatStringForKey(storeObj,"name","storeKey");
-        // firebase.database().ref('/')
-        //     .child(`stores`)
-        //     .push(storeObj)
-        //     .then(function (){
-        //         dispatch(StockActions.addStoreSuccessful());
-        //     })
-        //     .catch(function (error){
-        //         dispatch(StockActions.addStoreRejected(error));
-        //     });
+       
         instance.post("/addStores", { storeName: storeObj.name, location: storeObj.location }, instance.defaults.headers.token = token)
             .then(response => response.data)
             .then(body => {
@@ -64,49 +52,9 @@ export default class StockMiddleware {
     }
 
     //Add Purchase Details
-    static addPurchaseDetails(purchaseDetailsObj) {
-        console.log("addPurchaseDetails ", purchaseDetailsObj);
-        return (dispatch) => {
-            dispatch(StockActions.addPurchaseDetails())
-            StockMiddleware.addPurchaseDetailsOnFirebase(dispatch, purchaseDetailsObj);
-        }
-    }
+    
 
-    static addPurchaseDetailsOnFirebase(dispatch, purchaseDetailsObj) {
-        //StockMiddleware.formatStringForKey(purchaseDetailsObj,"name","productKey");
-        purchaseDetailsObj.type = "Purchase";
-        firebase.database().ref('/')
-            .child(`inventoryDetails`)
-            .push(purchaseDetailsObj)
-            .then(function () {
-                //dispatch(StockActions.addPurchaseDetailsSuccessful());
-                StockMiddleware.addStockCountOnFirebase(dispatch, purchaseDetailsObj);
-            })
-            .catch(function (error) {
-                dispatch(StockActions.addPurchaseDetailsRejected(error));
-            });
-    }
-
-    static addStockCountOnFirebase(dispatch, purchaseDetailsObj) {
-        var countRef = firebase.database().ref('/')
-            .child(`stockCounts/${purchaseDetailsObj.productKey}/${purchaseDetailsObj.storeKey}`);
-        countRef.once('value')
-            .then(function (count) {
-                var countforProduct = 0;
-                if (count && count.val()) {
-                    countforProduct = count.val().count;
-                }
-
-                countRef.update({ count: countforProduct + purchaseDetailsObj.quantity })
-                    .then(function () {
-                        dispatch(StockActions.addPurchaseDetailsSuccessful());
-                    })
-                    .catch(function (error) {
-                        dispatch(StockActions.addPurchaseDetailsRejected(error));
-                    });
-            });
-    }
-
+   
 
     //Add Sale Details
     static addSaleDetails(saleDetailsObj, token) {
@@ -131,41 +79,9 @@ export default class StockMiddleware {
         })
     }
 
-    static subtractStockCountOnFirebase(dispatch, saleDetailsObj) {
-        var countRef = firebase.database().ref('/')
-            .child(`stockCounts/${saleDetailsObj.productKey}/${saleDetailsObj.storeKey}`);
-        countRef.once('value')
-            .then(function (count) {
-                var countforProduct = 0;
-                if (count && count.val()) {
-                    countforProduct = count.val().count;
-                }
-                var newCount = countforProduct - saleDetailsObj.quantity;
-                StockMiddleware.updateNotificationOnFirebase(dispatch, newCount, saleDetailsObj);
-                countRef.update({ count: newCount })
-                    .then(function () {
-                        dispatch(StockActions.addSaleDetailsSuccessful());
-                    })
-                    .catch(function (error) {
-                        dispatch(StockActions.addSaleDetailsRejected(error));
-                    });
-            });
-    }
+   
 
-    static updateNotificationOnFirebase(dispatch, newCount, detailsObj) {
-        if (newCount < 5) {
-            firebase.database().ref('/')
-                .child(`notifications/${detailsObj.storeKey}|${detailsObj.productKey}`)
-                .set(({ productName: detailsObj.product, storeName: detailsObj.store, quantity: newCount }))
-                .then(function () {
-                    //StockMiddleware.subtractStockCountOnFirebase(dispatch,saleDetailsObj);
-                    //dispatch(StockActions.addSaleDetailsSuccessful());
-                })
-                .catch(function (error) {
-                    //dispatch(StockActions.addSaleDetailsRejected(error));
-                });
-        }
-    }
+   
     /// Get Store List Functions
     static getStoreList(token) {
         console.log("getStoreList ");
@@ -176,11 +92,7 @@ export default class StockMiddleware {
     }
 
     static getStoreListFromDatabase(dispatch, token) {
-        // const storeListRef = firebase.database().ref('/')
-        //                     .child("stores")
-        // storeListRef.on("child_added",function (snapshot){
-        //     dispatch(StockActions.addStoreItemToList(snapshot.val()))
-        // })
+        
         instance.get("/getStores", instance.defaults.headers.token = token)
             .then(response => response.data)
             .then(body => {
@@ -202,11 +114,7 @@ export default class StockMiddleware {
     }
 
     static getProductListFromDatabase(dispatch, token) {
-        // const productListRef = firebase.database().ref('/')
-        //                     .child("products")
-        // productListRef.on("child_added",function (snapshot){
-        //     dispatch(StockActions.addProductItemToList(snapshot.val()))
-        // })
+        
         instance.get("/getProducts", instance.defaults.headers.token = token)
             .then(response => response.data)
             .then(body => {
@@ -228,16 +136,7 @@ export default class StockMiddleware {
     }
 
     static getSalesListFromDatabase(dispatch,token) {
-        // const salesListRef = firebase.database().ref('/')
-        //     .child("inventoryDetails")
-        //     .orderByChild("date")
-        //     //.equalTo("Sale")
-        //     .startAt(startDate).endAt(endDate);
-        // salesListRef.on("child_added", function (snapshot) {
-        //     if (snapshot.val().type === "Sale") {
-        //         dispatch(StockActions.addSaleItemToList(snapshot.val()))
-        //     }
-        // })
+       
         instance.get("/getSales",instance.defaults.headers.token = token)
         .then(response => response.data)
         .then(body => {
@@ -268,20 +167,5 @@ export default class StockMiddleware {
     }
 
     //Get Stock Counts
-    static getStockCounts() {
-        console.log("getStockCounts");
-        return (dispatch) => {
-            dispatch(StockActions.getStockCount())
-            StockMiddleware.getStockCountFromFirebase(dispatch);
-        }
-    }
-
-    static getStockCountFromFirebase(dispatch) {
-        firebase.database().ref('/')
-            .child(`stockCounts`)
-            .on("value", function (snapshot) {
-                console.log(snapshot.val());
-                dispatch(StockActions.getStockCountSuccessful(snapshot.val()));
-            });
-    }
+    
 }

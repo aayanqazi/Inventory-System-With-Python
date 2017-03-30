@@ -16,6 +16,12 @@
         background-image:  url('../../images/menu-bg.png');
         height: 70px;
       }
+.lastLine{
+      position: fixed;
+      bottom:0;
+      width:100%;
+      text-align: center;
+}
 .navigation-icon {
         float: left;
         display: block;

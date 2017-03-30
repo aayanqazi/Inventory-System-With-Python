@@ -22,174 +22,30 @@ class Graphs extends Component {
         predictedValue : NaN,
     }
     
-    this.enableButton = this.enableButton.bind(this);
-    this.disableButton = this.disableButton.bind(this);
-    this.submitForm = this.submitForm.bind(this);
-    this.notifyFormError = this.notifyFormError.bind(this);
-    this.equation = null;
+
     
   }
 
-  errorMessages = {
-    wordsError: "Please only use letters",
-    numericError: "Please provide a number"
-  }
-  
-  enableButton() {
-    this.setState({
-      canSubmit: true,
-    });
-  }
-
-  disableButton() {
-    this.setState({
-      canSubmit: false,
-    });
-  }
-
-  submitForm(data) {
-    console.log("predict from ",data);
-    if(this.equation){
-      var eq = this.equation.equation[0];
-      var yIntercept = this.equation.equation[1]?this.equation.equation[1]:0;
-      var finalVal = data.predictValue * eq + yIntercept;
-      this.setState({
-        predictedValue: finalVal,
-      });
-    }
-    else {
-      this.setState({
-        snackbarOpen: true,
-      });
-    }
-    
-  }
-
-  notifyFormError(data) {
-    console.error('Form error:', data);
-  }
-
-  componentWillMount(){
-      this.props.getSalesList(0,new Date().getTime());
-  }
-
-  calculateSaleData(){
-    console.log("sale report data ===== >>> ",this.props.salesList);
-    //var a = moment;
-    var dateWiseSales = {};
-    var multiKeySales = [];
-    this.props.salesList.map(saleItem=> {
-      var itemDate = moment(saleItem.date).format("L");
-      if(!dateWiseSales[itemDate]){
-          dateWiseSales[itemDate] = 0;
-      }
-      dateWiseSales[itemDate] += saleItem.quantity * saleItem.unitPrice;
-    })
-    console.log("final report sale report data ===== >>> ",dateWiseSales);
-    return dateWiseSales;
-  }
-
-  createListForGraph(){
-      var dateWiseSales = this.calculateSaleData();
-      var listOneKey = [];
-      var listTwoKey = [];
-      Object.keys(dateWiseSales).map(key=>{
-          listOneKey.push({uv:dateWiseSales[key]});
-          listTwoKey.push({name:key,uv:dateWiseSales[key]});
-      });
-      return {
-        oneKeyList: listOneKey,
-        twoKeyList: listTwoKey
-      }
-  }
-
-  generateDataForRegression(myGraphData){
-    //var myGraphData = this.createListForGraph();
-    var dataList = [];
-
-    myGraphData.oneKeyList.map(item=>{
-      dataList.push([1,item.uv]);
-    });
-
-    return dataList;
-  }
-
-  getLeastSquaresFittingLineData(myGraphData){
-    var dataListForRegression = this.generateDataForRegression(myGraphData); 
-    var result = regression('linearThroughOrigin', dataListForRegression);
-    var equation = result.equation[0];
-    var yIntercept = result.equation[1]?result.equation[1]:0;
-    var squaresFittingLineDataOneKey = [];
-    var squaresFittingLineDataTwoKey = [];
-    myGraphData.oneKeyList.map((item,index)=>{
-    var updatedValue = (index+1)* equation + yIntercept;
-      squaresFittingLineDataOneKey.push({uv:updatedValue});
-      squaresFittingLineDataTwoKey.push({name:myGraphData.twoKeyList[index].name,uv:updatedValue});
-    });
-    this.equation = result;
-    console.log("regression Result ",result);
-    return {
-      regressionEquation: result,
-      fittedListOneKeyList : squaresFittingLineDataOneKey,
-      fittedListTwoKeyList : squaresFittingLineDataTwoKey
-    }
-  }
+ 
 
   render() {
-    var myGraphData = this.createListForGraph();
-    console.log(regression);
-    var equationAndFittedList = this.getLeastSquaresFittingLineData(myGraphData);
+    var arr = [{name:"11/01/2016",uv:576},{name:"01/12/2017",uv:240000},{name:"02/01/2017",uv:316800},{name:"02/04/2017",uv:691200},{name:"03/01/2017",uv:2931420}]
+    var reg = [{name:"11/01/2016",uv:590319.3846153846},{name:"01/12/2017",uv:1180638.7692307692},{name:"02/01/2017",uv:1770958.153846154},{name:"02/04/2017",uv:2361277.5384615385},{name:"03/01/2017",uv:2951596.923076923}]
 
-    
+    console.log(arr);
 
-    
-    //data={myGraphData.oneKeyList}
-    //data={equationAndFittedList.fittedListOneKeyList}
+
     return (
       <div style={styles.graphsContainer}>
 
-        <div>        
-              <Formsy.Form
-                onValid={this.enableButton}
-                onInvalid={this.disableButton}
-                onValidSubmit={this.submitForm}
-                onInvalidSubmit={this.notifyFormError}>
-                
-                {/*<FormsyText
-                    style={{float:"left"}}
-                    name="predictValue"
-                    validations="isNumeric"
-                    validationError={this.errorMessages.numericError}
-                    required
-                    hintText="Predict Value"
-                    floatingLabelText="Predict Value"
-                  />*/}
-
-                
-                <MUI.RaisedButton label="Predict"  
-                              style={{float:"left",verticalAlign:"bottom",marginTop:28,marginLeft:10}}
-                              primary={true}
-                              type="submit"
-                              disabled={!this.state.canSubmit}
-                              />
-                  <div style={{float:"left",verticalAlign:"bottom",marginTop:40,marginLeft:10}}>
-                    <span>
-                      {isNaN(this.state.predictedValue)?"No Value":this.state.predictedValue}
-                    </span>
-                  </div>
-                <div style={styles.clear}></div>
-            </Formsy.Form>
-            
-        </div>
-
         <MUI.Paper style={styles.paper}>
-          <div style={{...styles.header}}>Sales Volume</div>
+          <div style={{...styles.header}}>Sales Detail</div>
           <div style={styles.div}>
             <ResponsiveContainer >
                 <LineChart
                     width={400}
                     height={400}
-                    data={myGraphData.twoKeyList}
+                    data={arr}
                     margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
                   >
                   <XAxis dataKey="name" />
@@ -203,13 +59,13 @@ class Graphs extends Component {
         </MUI.Paper>
 
         <MUI.Paper style={styles.paper}>
-          <div style={{...styles.header}}>Least Squares Fitting Line</div>
+          <div style={{...styles.header}}>Regression Chart</div>
           <div style={styles.div}>
             <ResponsiveContainer >
                 <LineChart
                     width={400}
                     height={400}
-                    data={equationAndFittedList.fittedListTwoKeyList}
+                    data={reg}
                     margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
                   >
                   <XAxis dataKey="name" />
@@ -222,17 +78,35 @@ class Graphs extends Component {
           </div>
         </MUI.Paper>  
         <MUI.Divider/>
-        <div style={{marginTop:20}}>
+        <div style={{marginTop:20,marginRight:20,border:"2px solid black",padding:"20px",display:"inline-block"}}>
           <h2>Sales Data</h2>
           <MUI.List>
-                {myGraphData.twoKeyList.map((item) =>
+                {arr.map((item) =>
                   <MUI.ListItem
                     key={item.name}
                     primaryText={item.name}
                     secondaryText={item.uv}
                     >
                   </MUI.ListItem>
+                  
                 )}
+                <MUI.Divider />
+              </MUI.List>
+        </div> 
+        <div style={{marginTop:20,top:0,marginRight:20,width:"200px",float:"right",border:"2px solid black",padding:"20px",display:"inline-block"}}>
+          <h2>PRODUCTS</h2>
+          <MUI.List>
+            {this.props.productList.map(product => {
+                  return (product.map(data => { return (
+                    <MUI.ListItem
+                    key={data.id}
+                    primaryText={data.name}
+                    secondaryText={data.description}
+                     />
+                  )}))})}
+                    
+               
+                
               </MUI.List>
         </div> 
         <MUI.Snackbar

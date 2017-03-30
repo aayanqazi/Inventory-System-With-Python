@@ -1,5 +1,5 @@
 
-import {white, purple600, purple500,grey400} from 'material-ui/styles/colors';
+import {white, purple600, purple500,grey400,grey700} from 'material-ui/styles/colors';
 import {typography} from 'material-ui/styles';
 const styles = {
   graphsContainer: {
@@ -39,19 +39,21 @@ const styles = {
     },
     paper: {
       //backgroundColor: purple500,
-      height: 400,
+      height: 300,
       maxWidth:500,
-      marginTop:20
+      marginTop:20,
+      marginLeft:30,
+      display:"inline"
     },
     div: {
-      height: 300,
+      height: 200,
       padding: '5px 15px 0 15px'
     },
     header: {
       fontSize: 24,
       fontWeight: typography.fontWeightLight,
       color: white,
-      backgroundColor: purple600,
+      backgroundColor: grey700,
       padding: 10,
     }
 };
